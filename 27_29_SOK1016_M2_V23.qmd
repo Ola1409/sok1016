@@ -1,0 +1,323 @@
+---
+title: "27_29_SOK1016_M2_V23"
+author: "27 & 29"
+format: pdf
+editor: visual
+echo: false
+---
+
+```{r}
+
+
+library(tidyverse)
+library(httr)
+library(PxWebApiData)
+library(rjstat)
+library(ggplot2)
+library(base)
+library(openxlsx)
+library(lubridate)
+```
+
+## OPPGAVE 1
+
+$$𝑦−𝑦𝑛 =𝑧−𝛼(𝑖−𝜋𝑒) $$
+
+$$𝑖=𝜙𝑦(𝑦−𝑦𝑛)+𝜙𝜋(𝜋−𝜋∗) $$
+
+$$ 𝜋=𝜋𝑒+𝛽(𝑦−𝑦𝑛) $$
+
+Modellen beskriver sammenhengen mellom produksjon, nominell rente og prisvekst i økonomien. 
+
+Ligning (1) viser hvordan produksjonsgapet, definert som differansen mellom faktisk produksjon 𝑦 og det naturlige nivået på produksjon $𝑦𝑛$, påvirker den nominelle renten $𝑖$. Parameteren $𝛼$ representerer sentralbankens respons på produksjonsgapet. Hvis produksjonsgapet er positivt, det vil si at faktisk produksjon er høyere enn det naturlige nivået, vil sentralbanken øke den nominelle renten for å dempe økonomisk aktivitet og dempe inflasjonen. Omvendt, hvis produksjonsgapet er negativt, vil sentralbanken senke renten for å stimulere økonomisk aktivitet og øke inflasjonen. 
+
+Ligning (2) beskriver hvordan den nominelle renten $𝑖$ påvirker produksjonen $𝑦$ og prisveksten $𝜋$. Parameteren $𝜙𝑦$ representerer følsomheten til produksjonen for endringer i den nominelle renten, mens parameteren $𝜙𝜋$ representerer følsomheten til prisveksten for endringer i den nominelle renten. Hvis den nominelle renten øker, vil produksjonen falle (fordi det blir dyrere å låne penger) og prisveksten vil reduseres (fordi økt rente reduserer etterspørselen og bidrar til å redusere inflasjonen). Omvendt, hvis den nominelle renten faller, vil produksjonen og prisveksten stiger. 
+
+Ligning (3) beskriver hvordan produksjonsgapet påvirker prisveksten. Parameteren $𝛽$ representerer følsomheten til prisveksten for endringer i produksjonsgapet. Hvis produksjonsgapet er positivt, vil prisveksten øke (fordi økt etterspørsel fører til høyere priser). Omvendt, hvis produksjonsgapet er negativt, vil prisveksten reduseres (fordi det er mindre etterspørsel og lavere priser). 
+
+### 1a)
+
+For å forstå hva som bestemmer verdien på parameteren $𝛼$, kan det være nyttig å se på en mer detaljert modell som beskriver hvordan sentralbanken setter renten. 
+
+En vanlig modell for å beskrive sentralbankens rentesetting er en såkalt taylor-regelen. I denne modellen er den nominelle renten avhengig av inflasjonsgapet og produksjonsgapet, og kan uttrykkes som: 
+
+$$𝑖 = 𝑖* + 𝜋 + 𝛼(𝑦 − 𝑦n)$$ 
+
+Her er $𝑖*$ en nøytral rente som representerer det nivået renten ville vært på i fravær av inflasjon og produksjonsgap. $𝜋$ er inflasjonen, $𝑦$ er faktisk produksjon, og $𝑦n$ er den potensielle produksjonen, det vil si produksjonsnivået som ville vært oppnådd hvis økonomien var i likevekt uten produksjonsgap. 
+
+### 1b)
+
+Når inflasjonsforventningene øker, kan sentralbanken øke rentene for å redusere inflasjonen. Dette kan føre til at det blir dyrere å ta opp lån, noe som kan redusere etterspørselen etter varer og tjenester. Hvis etterspørselen reduseres, vil produksjonen også reduseres (Δ𝑦 \< 0). Prisveksten vil også reduseres som et resultat av lavere etterspørsel (Δ𝜋 \< 0). 
+
+Hvor mye produksjonen vil reduseres som følge av en økning i rentene, avhenger av hvor følsomt bedriftene er for endringer i rentenivået. Hvis bedriftene er svært følsomme for endringer i rentenivået, vil en økning i rentene føre til en betydelig reduksjon i etterspørselen og dermed en betydelig reduksjon i produksjonen. I dette tilfellet vil produksjonen falle når inflasjonsforventningene øker og rentene øker. 
+
+På den annen side, hvis bedriftene er mindre følsomme for endringer i rentenivået, vil en økning i rentene ha mindre effekt på etterspørselen og produksjonen. I dette tilfellet vil produksjonen forbli relativt stabil når inflasjonsforventningene øker og rentene øker. 
+
+Den økonomiske intuisjonen bak denne restriksjonen er at når bedriftene er svært følsomme for endringer i rentenivået, vil økt inflasjon føre til høyere renter, noe som igjen vil redusere etterspørselen og produksjonen.
+
+## 
+OPPGAVE 2
+
+𝜋𝑡 = 𝜋𝑡−1 + 𝛽(𝑦𝑡 − 𝑦𝑛) 
+
+= 𝜋𝑡−2 + 𝛽(𝑦𝑡−1 − 𝑦𝑛) + 𝛽(𝑦𝑡 − 𝑦𝑛) 
+
+= 𝜋𝑡−3 + 𝛽(𝑦𝑡−2 − 𝑦𝑛) + 𝛽(𝑦𝑡−1 − 𝑦𝑛) + 𝛽(𝑦𝑡 − 𝑦𝑛) = 𝜋0 + ∑𝑠=1𝑡 𝛽(𝑦𝑠 − 𝑦𝑛) 
+
+Så for alle 𝜏 \> 0, kan vi skrive  
+
+𝜋𝜏 = 𝜋0 + ∑𝑠=1𝜏 𝛽(𝑦𝑠 − 𝑦𝑛) 
+
+Vi kan starte med å bruke ligning (3\*) og sette inn 𝜋𝑡𝑒 = 𝜋𝑡−1, og deretter bruke denne ligningen rekursivt for å få 𝜋𝑡 uttrykt som en sum av produksjonsgapet fra periode 0 til 𝑡 multiplisert med 𝛽. Jo større produksjonsgapet er og jo høyere 𝛽 er, desto større blir forventet prisvekst i periode 𝑡. Hvis en ekspansiv økonomisk politikk prøver å opprettholde et positivt produksjonsgap over tid, vil dette føre til økt sum av produksjonsgapet og dermed økende forventet prisvekst. Dette kan igjen føre til økt inflasjon, og hvis sentralbanken ikke reagerer på dette, kan det føre til en inflasjonsspiral og en økonomisk krise. Dette kalles hyperinflasjon og er da ikke en rimelig antakelse over lengre tid. 
+
+ 
+
+Adaptive forventninger antar at økonomiske aktører tilpasser sine forventninger basert på tidligere observasjoner av prisvekst og andre økonomiske variabler. På kort sikt kan adaptive forventninger være en rimelig antagelse i situasjoner med vedvarende økning i prisvekst. Men på lang sikt kan økonomiske aktører lære av erfaringene sine og justere forventningene sine mer systematisk. Sentralbanken kan også endre sin politikk for å dempe inflasjonen, noe som kan påvirke økonomiske aktørers forventninger og atferd. 
+
+## OPPGAVE 3
+
+```{r}
+# Manuell data på husholdninger og næringslivsledere
+husholdningene <- c(1.9, 1.8, 1.8, 2.0, 1.6, 1.9, 1.9, 2.3,
+                    2.0, 2.0, 1.8, 2.0, 2.0, 2.1, 2.4, 1.9,
+                    2.1, 2.2, 2.0, 2.1, 1.8, 2.5, 2.1, 1.9,
+                    1.8, 2.2, 2.3, 3.0, 3.2, 4.3, 3.6, 4.1)
+
+naeringslivsledere <- c(2.4, 2.1, 2.2, 2.3, 2.4, 2.3, 2.6,
+                        2.6, 2.8, 2.4, 2.3, 2.5, 2.2, 2.3,
+                        2.4, 2.5, 2.6, 2.6, 2.5, 2.5, 2.4,
+                        2.5, 2.6, 2.4, 2.9, 3.2, 3.6, 3.9,
+                        4.7, 5.4, 5.6, 6.4)
+
+
+# Lager datasett av begge
+df <- data.frame(husholdningene, naeringslivsledere)
+
+# Lager linjeplot 
+ggplot(df, aes(x=seq_along(husholdningene))) +
+  geom_line(aes(y=husholdningene, color="Husholdninger")) +
+  geom_line(aes(y=naeringslivsledere, color="Næringslivsledere")) +
+  labs(title="Predikert prisvekst", subtitle = "Kilde 2", x="År", y="Prosent", color="") +
+  scale_color_manual(values=c("blue", "red")) +
+  scale_x_continuous(limits=c(1,length(husholdningene)),
+                     breaks=seq(1, length(husholdningene), by=4),
+                     labels=c(2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022)) +
+  theme_minimal()
+```
+
+```{r}
+#Henter inn data via json spørring
+url <- "https://data.ssb.no/api/v0/no/table/03013/"
+
+query <- '{
+  "query": [
+    {
+      "code": "Konsumgrp",
+      "selection": {
+        "filter": "vs:CoiCop2016niva1",
+        "values": [
+          "TOTAL"
+        ]
+      }
+    },
+    {
+      "code": "ContentsCode",
+      "selection": {
+        "filter": "item",
+        "values": [
+          "Tolvmanedersendring"
+        ]
+      }
+    },
+    {
+      "code": "Tid",
+      "selection": {
+        "filter": "item",
+        "values": [
+          "2016M01",
+          "2016M02",
+          "2016M03",
+          "2016M04",
+          "2016M05",
+          "2016M06",
+          "2016M07",
+          "2016M08",
+          "2016M09",
+          "2016M10",
+          "2016M11",
+          "2016M12",
+          "2017M01",
+          "2017M02",
+          "2017M03",
+          "2017M04",
+          "2017M05",
+          "2017M06",
+          "2017M07",
+          "2017M08",
+          "2017M09",
+          "2017M10",
+          "2017M11",
+          "2017M12",
+          "2018M01",
+          "2018M02",
+          "2018M03",
+          "2018M04",
+          "2018M05",
+          "2018M06",
+          "2018M07",
+          "2018M08",
+          "2018M09",
+          "2018M10",
+          "2018M11",
+          "2018M12",
+          "2019M01",
+          "2019M02",
+          "2019M03",
+          "2019M04",
+          "2019M05",
+          "2019M06",
+          "2019M07",
+          "2019M08",
+          "2019M09",
+          "2019M10",
+          "2019M11",
+          "2019M12",
+          "2020M01",
+          "2020M02",
+          "2020M03",
+          "2020M04",
+          "2020M05",
+          "2020M06",
+          "2020M07",
+          "2020M08",
+          "2020M09",
+          "2020M10",
+          "2020M11",
+          "2020M12",
+          "2021M01",
+          "2021M02",
+          "2021M03",
+          "2021M04",
+          "2021M05",
+          "2021M06",
+          "2021M07",
+          "2021M08",
+          "2021M09",
+          "2021M10",
+          "2021M11",
+          "2021M12",
+          "2022M01",
+          "2022M02",
+          "2022M03",
+          "2022M04",
+          "2022M05",
+          "2022M06",
+          "2022M07",
+          "2022M08",
+          "2022M09",
+          "2022M10",
+          "2022M11",
+          "2022M12"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "format": "json-stat2"
+  }
+}'
+  
+hent_indeks.tmp <- url %>%
+  POST(body = query, encode = "json")
+
+df_kpi <-  hent_indeks.tmp %>%
+  content("text") %>%
+  fromJSONstat() %>%
+  as_tibble()
+
+
+```
+
+```{r}
+df_kpi %>% 
+  mutate(year = year(as.Date(paste0(måned, "-01"), format = "%YM%m-%d"))) %>%
+  group_by(year) %>%
+  summarise(avg_cpi = mean(`value`)) %>%
+  ggplot(aes(x = year, y = avg_cpi)) +
+  geom_line() +
+  labs(title="Konsumprisindeks", subtitle = "Kilde 1", x="År", y="", color="")
+  
+```
+
+```{r}
+url_konsum <- "https://data.ssb.no/api/v0/no/table/09172/"
+
+query <- '{
+  "query": [
+    {
+      "code": "UtgifterHushold",
+      "selection": {
+        "filter": "vs:NRKonsumHusAgg",
+        "values": [
+          "nr61_"
+        ]
+      }
+    },
+    {
+      "code": "ContentsCode",
+      "selection": {
+        "filter": "item",
+        "values": [
+          "FastePriser"
+        ]
+      }
+    },
+    {
+      "code": "Tid",
+      "selection": {
+        "filter": "item",
+        "values": [
+          "2015",
+          "2016",
+          "2017",
+          "2018",
+          "2019",
+          "2020",
+          "2021",
+          "2022"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "format": "json-stat2"
+  }
+}'
+
+hent_indeks.tmp_konsum <- url_konsum %>%
+  POST(body = query, encode = "json")
+
+df_konsum <-  hent_indeks.tmp_konsum %>%
+  content("text") %>%
+  fromJSONstat() %>%
+  as_tibble()
+```
+
+```{r}
+ggplot(df_konsum, aes(x = år, y = value)) +
+  geom_col(color = "black", fill = "light blue") +
+  scale_y_continuous(labels = scales::comma_format()) +
+  labs(x = "Year", y = "Milliarder kroner", title = "Husholdningers konsum i Norge, 2015-2022")
+```
+
+Her kan vi se at forventet prisvekst og faktisk prisvekst traff hverandre nokså bra, hvertfall med tanke på økningen etter 2019, hvor prisen skjøt i været.
+
+På mellomlang sikt forventer alle i undersøkelsen en lavere prisstigning, men fortsatt prisstigning over tid.
+
+Vi har valgt å ta med en figur om konsumet til husholdningene denne perioden fordi vi mener dette kan vise om prisveksten har blitt lagt merke til. Det er tydelig at konsumet gikk ned etter 2019, men dette må ikke bare være prisvekst, men dette kan være på grunn av koronakrisen også som inntraff i 2020.
+
+## Litteraturliste:
+
+-Kilde 1: Data fra SSB. <https://www.ssb.no/statbank/table/03013/tableViewLayout1/> 
+
+Kilde 2: Data fra Ipsos undersøkelse til Norges bank. <https://w.ipsos.no/bild/Forventningsundersokelse-for-Norges-Bank-1-kv-2002-til-1-kv-2023-Excel-CSV-160223.zip>    
